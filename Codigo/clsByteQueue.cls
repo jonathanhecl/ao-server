@@ -122,6 +122,17 @@ Private Sub Class_Terminate()
 
 End Sub
 
+Public Sub CleanBuffer()
+'***************************************************
+'Autor: ^[GS]^
+'Last Modification: 04/07/2022
+'***************************************************
+    
+    Call RemoveData(queueLength - 1)
+    queueLength = 0
+
+End Sub
+
 ''
 ' Copies another ByteQueue's data into this object.
 '

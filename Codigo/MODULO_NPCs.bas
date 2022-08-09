@@ -95,7 +95,7 @@ Public Sub MuereNpc(ByVal NpcIndex As Integer, ByVal Userindex As Integer)
     '23/05/2010: ZaMa - El usuario pierde la pertenencia del npc.
     '13/07/2010: ZaMa - Optimizaciones de logica en la seleccion de pretoriano, y el posible cambio de alencion del usuario.
     '********************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim MiNPC As npc
 
@@ -129,19 +129,19 @@ Public Sub MuereNpc(ByVal NpcIndex As Integer, ByVal Userindex As Integer)
             'El user que lo mato tiene mascotas?
             If .NroMascotas > 0 Then
 
-                Dim T As Integer
+                Dim t As Integer
 
-                For T = 1 To MAXMASCOTAS
+                For t = 1 To MAXMASCOTAS
 
-                    If .MascotasIndex(T) > 0 Then
-                        If Npclist(.MascotasIndex(T)).TargetNPC = NpcIndex Then
-                            Call FollowAmo(.MascotasIndex(T))
+                    If .MascotasIndex(t) > 0 Then
+                        If Npclist(.MascotasIndex(t)).TargetNPC = NpcIndex Then
+                            Call FollowAmo(.MascotasIndex(t))
 
                         End If
 
                     End If
 
-                Next T
+                Next t
 
             End If
             
@@ -247,7 +247,7 @@ Public Sub MuereNpc(ByVal NpcIndex As Integer, ByVal Userindex As Integer)
    
     If MiNPC.MaestroUser = 0 Then
         'Tiramos el inventario
-        Call NPC_TIRAR_ITEMS(MiNPC, MiNPC.NPCtype = eNPCType.Pretoriano, UserIndex)
+        Call NPC_TIRAR_ITEMS(MiNPC, MiNPC.NPCtype = eNPCType.Pretoriano, Userindex)
         'ReSpawn o no
         Call ReSpawnNpc(MiNPC)
 
@@ -292,7 +292,7 @@ Public Sub MuereNpc(ByVal NpcIndex As Integer, ByVal Userindex As Integer)
 
     Exit Sub
 
-ErrHandler:
+errHandler:
     Call LogError("Error en MuereNpc - Error: " & Err.Number & " - Desc: " & Err.description)
 
 End Sub
@@ -321,7 +321,7 @@ Private Sub ResetNpcFlags(ByVal NpcIndex As Integer)
         .LanzaSpells = 0
         .invisible = 0
         .Maldicion = 0
-        .SiguiendoGM = false
+        .SiguiendoGm = False
         .OldHostil = 0
         .OldMovement = 0
         .Paralizado = 0
@@ -486,7 +486,7 @@ Public Sub QuitarNPC(ByVal NpcIndex As Integer)
     'Last Modification: 16/11/2009
     '16/11/2009: ZaMa - Now npcs lose their owner
     '***************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     With Npclist(NpcIndex)
         .flags.NPCActive = False
@@ -523,7 +523,7 @@ Public Sub QuitarNPC(ByVal NpcIndex As Integer)
 
     Exit Sub
 
-ErrHandler:
+errHandler:
     Call LogError("Error en QuitarNPC")
 
 End Sub
@@ -535,7 +535,7 @@ Public Sub QuitarPet(ByVal Userindex As Integer, ByVal NpcIndex As Integer)
     'Last Modification: 18/11/2009
     'Kills a pet
     '***************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim i        As Integer
 
@@ -564,7 +564,7 @@ Public Sub QuitarPet(ByVal Userindex As Integer, ByVal NpcIndex As Integer)
     
     Exit Sub
 
-ErrHandler:
+errHandler:
     Call LogError("Error en QuitarPet. Error: " & Err.Number & " Desc: " & Err.description & " NpcIndex: " & NpcIndex & " UserIndex: " & Userindex & " PetIndex: " & PetIndex)
 
 End Sub
@@ -600,7 +600,7 @@ Public Function CrearNPC(NroNPC As Integer, _
 
     Dim Pos            As WorldPos
 
-    Dim NEWPOS         As WorldPos
+    Dim newPos         As WorldPos
 
     Dim altpos         As WorldPos
 
@@ -648,19 +648,19 @@ Public Function CrearNPC(NroNPC As Integer, _
             Pos.X = RandomNumber(MinXBorder, MaxXBorder)    'Obtenemos posicion al azar en x
             Pos.Y = RandomNumber(MinYBorder, MaxYBorder)    'Obtenemos posicion al azar en y
             
-            Call ClosestLegalPos(Pos, NEWPOS, PuedeAgua, PuedeTierra)  'Nos devuelve la posicion valida mas cercana
+            Call ClosestLegalPos(Pos, newPos, PuedeAgua, PuedeTierra)  'Nos devuelve la posicion valida mas cercana
 
-            If NEWPOS.X <> 0 And NEWPOS.Y <> 0 Then
-                altpos.X = NEWPOS.X
-                altpos.Y = NEWPOS.Y
+            If newPos.X <> 0 And newPos.Y <> 0 Then
+                altpos.X = newPos.X
+                altpos.Y = newPos.Y
             End If
 
             'Si X e Y son iguales a 0 significa que no se encontro posicion valida
-            If LegalPos(NEWPOS.Map, NEWPOS.X, NEWPOS.Y, PuedeAgua, PuedeTierra) And Not HayPCarea(NEWPOS) And TestSpawnTrigger(NEWPOS, PuedeAgua) Then
+            If LegalPos(newPos.Map, newPos.X, newPos.Y, PuedeAgua, PuedeTierra) And Not HayPCarea(newPos) And TestSpawnTrigger(newPos, PuedeAgua) Then
                 'Asignamos las nuevas coordenas solo si son validas
-                Npclist(nIndex).Pos.Map = NEWPOS.Map
-                Npclist(nIndex).Pos.X = NEWPOS.X
-                Npclist(nIndex).Pos.Y = NEWPOS.Y
+                Npclist(nIndex).Pos.Map = newPos.Map
+                Npclist(nIndex).Pos.X = newPos.X
+                Npclist(nIndex).Pos.Y = newPos.Y
                 PosicionValida = True
             End If
                 
@@ -675,22 +675,22 @@ Public Function CrearNPC(NroNPC As Integer, _
                     PosicionValida = True
                 Else
                     ' WyroX: Supero la cantidad de intentos sin ninguna posicion valida? Probamos un intento mas pero sin el flag "PuedeTierra"
-                    Call ClosestLegalPos(Pos, NEWPOS, PuedeAgua)
+                    Call ClosestLegalPos(Pos, newPos, PuedeAgua)
 
-                    If NEWPOS.X <> 0 And NEWPOS.Y <> 0 Then
-                        Npclist(nIndex).Pos.Map = NEWPOS.Map
-                        Npclist(nIndex).Pos.X = NEWPOS.X
-                        Npclist(nIndex).Pos.Y = NEWPOS.Y
+                    If newPos.X <> 0 And newPos.Y <> 0 Then
+                        Npclist(nIndex).Pos.Map = newPos.Map
+                        Npclist(nIndex).Pos.X = newPos.X
+                        Npclist(nIndex).Pos.Y = newPos.Y
                         PosicionValida = True
                     Else
                         altpos.X = 50
                         altpos.Y = 50
-                        Call ClosestLegalPos(altpos, NEWPOS)
+                        Call ClosestLegalPos(altpos, newPos)
 
-                        If NEWPOS.X <> 0 And NEWPOS.Y <> 0 Then
-                            Npclist(nIndex).Pos.Map = NEWPOS.Map
-                            Npclist(nIndex).Pos.X = NEWPOS.X
-                            Npclist(nIndex).Pos.Y = NEWPOS.Y
+                        If newPos.X <> 0 And newPos.Y <> 0 Then
+                            Npclist(nIndex).Pos.Map = newPos.Map
+                            Npclist(nIndex).Pos.X = newPos.X
+                            Npclist(nIndex).Pos.Y = newPos.Y
                             PosicionValida = True
                         Else
                             Call QuitarNPC(nIndex)
@@ -852,7 +852,7 @@ Public Function MoveNPCChar(ByVal NpcIndex As Integer, ByVal nHeading As Byte) A
                 If Not HayAgua(.Pos.Map, nPos.X, nPos.Y) And HayAgua(.Pos.Map, .Pos.X, .Pos.Y) Then Exit Function
                 
                 'Se choca con los gm invisible si es que esta siguiendo a uno por el comando /seguir
-                If .flags.SiguiendoGM = True And UserList(Userindex).flags.AdminInvisible = 1 Then Exit Function
+                If .flags.SiguiendoGm = True And UserList(Userindex).flags.AdminInvisible = 1 Then Exit Function
 
                 With UserList(Userindex)
                     ' Actualizamos posicion y mapa
@@ -907,7 +907,7 @@ Function NextOpenNPC() As Integer
     '
     '***************************************************
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim LoopC As Long
       
@@ -920,7 +920,7 @@ Function NextOpenNPC() As Integer
     NextOpenNPC = LoopC
     Exit Function
 
-ErrHandler:
+errHandler:
     Call LogError("Error en NextOpenNPC")
 
 End Function
@@ -961,7 +961,7 @@ Function SpawnNpc(ByVal NpcIndex As Integer, _
     '23/01/2007 -> Pablo (ToxicWaste): Creates an NPC of the type Npcindex
     '06/15/2008 -> Optimize el codigo. (NicoNZ)
     '***************************************************
-    Dim NEWPOS         As WorldPos
+    Dim newPos         As WorldPos
 
     Dim altpos         As WorldPos
 
@@ -990,15 +990,15 @@ Function SpawnNpc(ByVal NpcIndex As Integer, _
     PuedeAgua = Npclist(nIndex).flags.AguaValida
     PuedeTierra = Not Npclist(nIndex).flags.TierraInvalida = 1
         
-    Call ClosestLegalPos(Pos, NEWPOS, PuedeAgua, PuedeTierra)  'Nos devuelve la posicion valida mas cercana
+    Call ClosestLegalPos(Pos, newPos, PuedeAgua, PuedeTierra)  'Nos devuelve la posicion valida mas cercana
     Call ClosestLegalPos(Pos, altpos, PuedeAgua)
     'Si X e Y son iguales a 0 significa que no se encontro posicion valida
 
-    If NEWPOS.X <> 0 And NEWPOS.Y <> 0 Then
+    If newPos.X <> 0 And newPos.Y <> 0 Then
         'Asignamos las nuevas coordenas solo si son validas
-        Npclist(nIndex).Pos.Map = NEWPOS.Map
-        Npclist(nIndex).Pos.X = NEWPOS.X
-        Npclist(nIndex).Pos.Y = NEWPOS.Y
+        Npclist(nIndex).Pos.Map = newPos.Map
+        Npclist(nIndex).Pos.X = newPos.X
+        Npclist(nIndex).Pos.Y = newPos.Y
         PosicionValida = True
     Else
 
@@ -1022,7 +1022,7 @@ Function SpawnNpc(ByVal NpcIndex As Integer, _
     End If
 
     'asignamos las nuevas coordenas
-    Map = NEWPOS.Map
+    Map = newPos.Map
     X = Npclist(nIndex).Pos.X
     Y = Npclist(nIndex).Pos.Y
 
@@ -1282,13 +1282,13 @@ Public Sub DoFollow(ByVal NpcIndex As Integer, ByVal UserName As String)
         If .flags.Follow Then
             .flags.AttackedBy = vbNullString
             .flags.Follow = False
-            .flags.SiguiendoGm = false
+            .flags.SiguiendoGm = False
             .Movement = .flags.OldMovement
             .Hostile = .flags.OldHostil
         Else
             .flags.AttackedBy = UserName
             .flags.Follow = True
-            .flags.SiguiendoGm = true
+            .flags.SiguiendoGm = True
             .Movement = TipoAI.NPCDEFENSA
             .Hostile = 0
 

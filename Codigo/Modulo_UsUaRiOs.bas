@@ -555,7 +555,7 @@ Public Sub MakeUserChar(ByVal toMap As Boolean, _
     '15/01/2010: ZaMa - Ahora se envia el color del nick.
     '*************************************************
 
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim CharIndex  As Integer
 
@@ -631,7 +631,7 @@ Public Sub MakeUserChar(ByVal toMap As Boolean, _
 
     Exit Sub
 
-ErrHandler:
+errHandler:
     LogError ("MakeUserChar: num: " & Err.Number & " desc: " & Err.description)
     'Resume Next
     Call CloseSocket(Userindex)
@@ -674,7 +674,7 @@ Public Sub CheckUserLevel(ByVal Userindex As Integer, Optional ByVal PrintInCons
     Dim DistVida(1 To 5) As Integer
     Dim GI               As Integer 'Guild Index
     
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     WasNewbie = EsNewbie(Userindex)
     
@@ -960,7 +960,7 @@ Public Sub CheckUserLevel(ByVal Userindex As Integer, Optional ByVal PrintInCons
     
     Exit Sub
 
-ErrHandler:
+errHandler:
     Call LogError("Error en la subrutina CheckUserLevel - Error : " & Err.Number & " - Description : " & Err.description)
 
 End Sub
@@ -1007,10 +1007,10 @@ Sub MoveUserChar(ByVal Userindex As Integer, ByVal nHeading As eHeading)
     If MoveToLegalPos(UserList(Userindex).Pos.Map, nPos.X, nPos.Y, sailing, Not sailing) Then
 
         'No se puede caminar con monturas en casas, bajo techo o dungeons
-        If UserList(Userindex).flags.Equitando And _ 
-           (MapData(UserList(Userindex).Pos.Map, nPos.X, nPos.Y).trigger = eTrigger.CASA Or _ 
+        If UserList(Userindex).flags.Equitando And _
+           (MapData(UserList(Userindex).Pos.Map, nPos.X, nPos.Y).trigger = eTrigger.CASA Or _
            MapData(UserList(Userindex).Pos.Map, nPos.X, nPos.Y).trigger = eTrigger.BAJOTECHO Or _
-           MapInfo(UserList(Userindex).Pos.Map).Zona = Dungeon ) Then _
+           MapInfo(UserList(Userindex).Pos.Map).Zona = Dungeon) Then _
 
             Exit Sub
         End If
@@ -1087,7 +1087,7 @@ Sub MoveUserChar(ByVal Userindex As Integer, ByVal nHeading As eHeading)
             End With
             
             'Actualizamos las areas de ser necesario
-            Call Areas.CheckUpdateNeededUser(UserIndex, nHeading)
+            Call Areas.CheckUpdateNeededUser(Userindex, nHeading)
         Else
             Call WritePosUpdate(Userindex)
 
@@ -1921,7 +1921,7 @@ Public Sub UserDie(ByVal Userindex As Integer, Optional ByVal AttackerIndex As I
         ' Retos nVSn. User muere
         If AttackerIndex <> 0 Then
             If .flags.SlotReto > 0 Then
-                Call Retos.UserdieFight(Userindex, AttackerIndex, False)
+                Call Retos.UserDieFight(Userindex, AttackerIndex, False)
             End If
         End If
     End With
@@ -1989,7 +1989,7 @@ Sub Tilelibre(ByRef Pos As WorldPos, _
     '23/01/2007 -> Pablo (ToxicWaste): El agua es ahora un TileLibre agregando las condiciones necesarias.
     '18/09/2010: ZaMa - Aplico optimizacion de busqueda de tile libre en forma de rombo.
     '**************************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
 
     Dim Found As Boolean
 
@@ -2040,7 +2040,7 @@ Sub Tilelibre(ByRef Pos As WorldPos, _
     
     Exit Sub
     
-ErrHandler:
+errHandler:
     Call LogError("Error en Tilelibre. Error: " & Err.Number & " - " & Err.description)
 
 End Sub
@@ -2793,7 +2793,7 @@ Public Function FarthestPet(ByVal Userindex As Integer) As Integer
     'Last Modify Date: 18/11/2009
     'Devuelve el indice de la mascota mas lejana.
     '**************************************************************
-    On Error GoTo ErrHandler
+    On Error GoTo errHandler
     
     Dim PetIndex      As Integer
 
@@ -2839,7 +2839,7 @@ Public Function FarthestPet(ByVal Userindex As Integer) As Integer
 
     Exit Function
     
-ErrHandler:
+errHandler:
     Call LogError("Error en FarthestPet")
 
 End Function
@@ -3140,3 +3140,9 @@ Public Sub HomeArrival(ByVal Userindex As Integer)
     End With
     
 End Sub
+
+Function IsPlayerImmutable(Userindex As Integer) As Boolean
+
+    IsPlayerImmutable = (UserList(Userindex).flags.Watching)
+    
+End Function

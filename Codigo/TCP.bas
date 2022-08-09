@@ -343,7 +343,7 @@ Sub ConnectNewUser(ByVal Userindex As Integer, _
         End If
     
         If UserList(Userindex).flags.UserLogged Then
-            Call LogCheating("El usuario " & UserList(Userindex).Name & " ha intentado crear a " & Name & " desde la IP " & UserList(Userindex).IP)
+            Call LogCheating("El usuario " & UserList(Userindex).Name & " ha intentado crear a " & Name & " desde la IP " & UserList(Userindex).ip)
         
             'Kick player ( and leave character inside :D )!
             Call CloseSocketSL(Userindex)
@@ -368,7 +368,7 @@ Sub ConnectNewUser(ByVal Userindex As Integer, _
         End If
     
         If Not ValidarCabeza(UserRaza, UserSexo, Head) Then
-            Call LogCheating("El usuario " & Name & " ha seleccionado la cabeza " & Head & " desde la IP " & .IP)
+            Call LogCheating("El usuario " & Name & " ha seleccionado la cabeza " & Head & " desde la IP " & .ip)
         
             Call WriteErrorMsg(Userindex, "Cabeza invalida, elija una cabeza seleccionable.")
             Exit Sub
@@ -817,14 +817,14 @@ Sub ConnectAccount(ByVal Userindex As Integer, _
     'Si no tienen interes en usarlo pueden desactivarlo en el Server.ini
     If ConexionAPI Then
         'Pasamos UserName tambien como email, ya que son lo mismo.... :(
-        Call ApiEndpointSendLoginAccountEmail(UserName, GetLastIpsAccount(UserName), UserList(Userindex).IP)
+        Call ApiEndpointSendLoginAccountEmail(UserName, GetLastIpsAccount(UserName), UserList(Userindex).ip)
     End If
 
 
     If Not Database_Enabled Then
         Call LoginAccountCharfile(Userindex, UserName)
     Else
-        Call SaveAccountLastLoginDatabase(UserName, UserList(Userindex).IP)
+        Call SaveAccountLastLoginDatabase(UserName, UserList(Userindex).ip)
         Call LoginAccountDatabase(Userindex, UserName)
     End If
 
@@ -844,7 +844,7 @@ Sub CloseSocket(ByVal Userindex As Integer)
     
     With UserList(Userindex)
 
-        Call SecurityIp.IpRestarConexion(GetLongIp(.IP))
+        Call SecurityIp.IpRestarConexion(GetLongIp(.ip))
         
         If .ConnID <> -1 Then
             Call CloseSocketSL(Userindex)
@@ -1037,7 +1037,7 @@ Sub ConnectUser(ByVal Userindex As Integer, _
     With UserList(Userindex)
 
         If .flags.UserLogged Then
-            Call LogCheating("El usuario " & .Name & " ha intentado loguear a " & Name & " desde la IP " & .IP)
+            Call LogCheating("El usuario " & .Name & " ha intentado loguear a " & Name & " desde la IP " & .ip)
             'Kick player ( and leave character inside :D )!
             Call CloseSocketSL(Userindex)
             Call Cerrar_Usuario(Userindex)
@@ -1063,7 +1063,7 @@ Sub ConnectUser(ByVal Userindex As Integer, _
     
         'Este IP ya esta conectado?
         If AllowMultiLogins = False Then
-            If CheckForSameIP(Userindex, .IP) = True Then
+            If CheckForSameIP(Userindex, .ip) = True Then
                 Call WriteErrorMsg(Userindex, "No es posible usar mas de un personaje al mismo tiempo.")
                 Call CloseSocket(Userindex)
                 Exit Sub
@@ -1106,19 +1106,19 @@ Sub ConnectUser(ByVal Userindex As Integer, _
         'Vemos que clase de user es (se lo usa para setear los privilegios al loguear el PJ)
         If EsAdmin(Name) Then
             .flags.Privilegios = .flags.Privilegios Or PlayerType.Admin
-            Call LogGM(Name, "Se conecto con ip:" & .IP)
+            Call LogGM(Name, "Se conecto con ip:" & .ip)
         ElseIf EsDios(Name) Then
             .flags.Privilegios = .flags.Privilegios Or PlayerType.Dios
-            Call LogGM(Name, "Se conecto con ip:" & .IP)
+            Call LogGM(Name, "Se conecto con ip:" & .ip)
         ElseIf EsSemiDios(Name) Then
             .flags.Privilegios = .flags.Privilegios Or PlayerType.SemiDios
         
             .flags.PrivEspecial = EsGmEspecial(Name)
         
-            Call LogGM(Name, "Se conecto con ip:" & .IP)
+            Call LogGM(Name, "Se conecto con ip:" & .ip)
         ElseIf EsConsejero(Name) Then
             .flags.Privilegios = .flags.Privilegios Or PlayerType.Consejero
-            Call LogGM(Name, "Se conecto con ip:" & .IP)
+            Call LogGM(Name, "Se conecto con ip:" & .ip)
         Else
             .flags.Privilegios = .flags.Privilegios Or PlayerType.User
             .flags.AdminPerseguible = True
@@ -1637,7 +1637,7 @@ Sub ResetCharInfo(ByVal Userindex As Integer)
     'Resetea todos los valores generales y las stats
     '03/15/2006 Maraxus - Uso de With para mayor performance y claridad.
     '*************************************************
-    With UserList(UserIndex).Char
+    With UserList(Userindex).Char
         .Escribiendo = 0
         .body = 0
         .CascoAnim = 0
@@ -1671,7 +1671,7 @@ Sub ResetBasicUserInfo(ByVal Userindex As Integer)
         .Pos.Map = 0
         .Pos.X = 0
         .Pos.Y = 0
-        .IP = vbNullString
+        .ip = vbNullString
         .Clase = 0
         .Email = vbNullString
         .Genero = 0
@@ -1784,6 +1784,7 @@ Sub ResetUserFlags(ByVal Userindex As Integer)
         .Hambre = 0
         .Sed = 0
         .Descansar = False
+        .Watching = False 'View
         .Vuela = 0
         .Navegando = 0
         .Equitando = 0
@@ -1821,6 +1822,11 @@ Sub ResetUserFlags(ByVal Userindex As Integer)
         .ParalizedBy = vbNullString
         .ParalizedByIndex = 0
         .ParalizedByNpcIndex = 0
+        
+        Dim LoopC As Byte
+        For LoopC = 1 To MAXSPECTING
+            .Specting(LoopC) = 0
+        Next
         
         If .OwnedNpc <> 0 Then
             Call PerdioNpc(Userindex)
@@ -1914,6 +1920,7 @@ Sub ResetUserSlot(ByVal Userindex As Integer)
     UserList(Userindex).ConnIDValida = False
     UserList(Userindex).ConnID = -1
 
+    Call ResetWatching(Userindex)
     Call LimpiarComercioSeguro(Userindex)
     Call ResetFacciones(Userindex)
     Call ResetContadores(Userindex)

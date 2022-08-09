@@ -73,6 +73,8 @@ Public Const FXSANGRE = 14
 
 Public Const MAXAMIGOS As Byte = 50   'Cantidad Maxima de Amigos
 
+Public Const MAXSPECTING As Byte = 10
+
 ''
 ' The color of chats over head of dead characters.
 Public Const CHAT_COLOR_DEAD_CHAR As Long = &HC0C0C0
@@ -1403,7 +1405,9 @@ Public Type UserFlags
     Ban As Byte
     AdministrativeBan As Byte
     
-    TargetUser As Integer ' Usuario senalado
+    Specting(1 To MAXSPECTING) As Integer 'Espectadores
+    Watching As Boolean ' View
+    TargetUser As Integer ' Usuario espectado
     
     TargetObj As Integer ' Obj senalado
     TargetObjMap As Integer
@@ -2112,7 +2116,7 @@ Public Declare Function GetPrivateProfileString _
                                                  ByVal lpKeyname As Any, _
                                                  ByVal lpdefault As String, _
                                                  ByVal lpreturnedstring As String, _
-                                                 ByVal nsize As Long, _
+                                                 ByVal nSize As Long, _
                                                  ByVal lpfilename As String) As Long
 
 Public Declare Sub ZeroMemory _
@@ -2293,7 +2297,7 @@ Public Enum eGMCommands
     KickAllChars            '/ECHARTODOSPJS
     ReloadNPCs              '/RELOADNPCS
     ReloadServerIni         '/RELOADSINI
-    ReloadSpells            '/RELOADHECHIZOS
+    reloadSpells            '/RELOADHECHIZOS
     ReloadObjects           '/RELOADOBJ
     Restart                 '/REINICIAR
     ResetAutoUpdate         '/AUTOUPDATE
