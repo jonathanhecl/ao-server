@@ -412,7 +412,7 @@ End Sub
 ' Handles incoming data.
 '
 ' @param    userIndex The index of the user sending the message.
-
+ 
 Public Function HandleIncomingData(ByVal Userindex As Integer) As Boolean
 
     '***************************************************
@@ -18528,19 +18528,24 @@ End Sub
 ' @param    UserIndex User to which the message is intended.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WritePosUpdate(ByVal Userindex As Integer)
+Public Sub WritePosUpdate(ByVal Userindex As Integer, Optional targetIndex As Integer)
 
     '***************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
-    'Last Modification: 05/17/06
+    'Last Modification: 15/08/2022 - ^[GS]^
     'Writes the "PosUpdate" message to the given user's outgoing data buffer
     '***************************************************
     On Error GoTo errHandler
 
     With UserList(Userindex).outgoingData
         Call .WriteByte(ServerPacketID.PosUpdate)
-        Call .WriteByte(UserList(Userindex).Pos.X)
-        Call .WriteByte(UserList(Userindex).Pos.Y)
+        If targetIndex = 0 Then
+            Call .WriteByte(UserList(Userindex).Pos.X)
+            Call .WriteByte(UserList(Userindex).Pos.Y)
+        Else
+            Call .WriteByte(UserList(targetIndex).Pos.X)
+            Call .WriteByte(UserList(targetIndex).Pos.Y)
+        End If
 
     End With
 
@@ -18765,18 +18770,22 @@ End Sub
 ' @param    UserIndex User to which the message is intended.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteUserCharIndexInServer(ByVal Userindex As Integer)
+Public Sub WriteUserCharIndexInServer(ByVal Userindex As Integer, Optional targetIndex As Integer)
 
     '***************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
-    'Last Modification: 05/17/06
+    'Last Modification: 15/08/2022 - ^[GS]^
     'Writes the "UserIndexInServer" message to the given user's outgoing data buffer
     '***************************************************
     On Error GoTo errHandler
 
     With UserList(Userindex).outgoingData
         Call .WriteByte(ServerPacketID.UserCharIndexInServer)
-        Call .WriteInteger(UserList(Userindex).Char.CharIndex)
+        If targetIndex = 0 Then
+            Call .WriteInteger(UserList(Userindex).Char.CharIndex)
+        Else
+            Call .WriteInteger(UserList(targetIndex).Char.CharIndex)
+        End If
 
     End With
 
@@ -19235,19 +19244,24 @@ End Sub
 ' @param    UserIndex User to which the message is intended.
 ' @remarks  The data is not actually sent until the buffer is properly flushed.
 
-Public Sub WriteAreaChanged(ByVal Userindex As Integer)
+Public Sub WriteAreaChanged(ByVal Userindex As Integer, Optional targetIndex As Integer)
 
     '***************************************************
     'Author: Juan Martin Sotuyo Dodero (Maraxus)
-    'Last Modification: 05/17/06
+    'Last Modification: 15/08/2022 - ^[GS]^
     'Writes the "AreaChanged" message to the given user's outgoing data buffer
     '***************************************************
     On Error GoTo errHandler
 
     With UserList(Userindex).outgoingData
         Call .WriteByte(ServerPacketID.AreaChanged)
-        Call .WriteByte(UserList(Userindex).Pos.X)
-        Call .WriteByte(UserList(Userindex).Pos.Y)
+        If targetIndex = 0 Then
+            Call .WriteByte(UserList(Userindex).Pos.X)
+            Call .WriteByte(UserList(Userindex).Pos.Y)
+        Else
+            Call .WriteByte(UserList(targetIndex).Pos.X)
+            Call .WriteByte(UserList(targetIndex).Pos.Y)
+        End If
 
     End With
 
@@ -24217,7 +24231,7 @@ On Error GoTo errHandler
         If willView Then ' Va a espectar
             tIndex = NameIndex(tName)
             If tIndex > 0 Then ' El usuario existe
-                Call WatchingPlayer(Userindex, tIndex)
+                Call StartWatching(Userindex, tIndex)
             Else ' El usuario no esta conectado
                 Call WriteConsoleMsg(Userindex, tName & " no se encuentra conectado.", FontTypeNames.FONTTYPE_INFO)
             End If
@@ -24313,10 +24327,10 @@ errHandler:
 End Sub
 
 
-Public Sub WriteModeWatching(ByVal Userindex As Integer, ByVal State As Byte)
+Public Sub WriteModeWatching(ByVal Userindex As Integer, ByVal State As Byte, targetIndex As Integer)
 '***************************************************
 'Author: ^[GS]^
-'Last Modification: 08/08/2022
+'Last Modification: 05/09/2022
 '
 ' State
 ' 0 - No estas observando / No te estan observando
@@ -24328,6 +24342,7 @@ On Error GoTo errHandler
     With UserList(Userindex)
         Call .outgoingData.WriteByte(ServerPacketID.ModeWatching)
         Call .outgoingData.WriteByte(State)
+        Call .outgoingData.WriteInteger(targetIndex)
     End With
     
     Exit Sub

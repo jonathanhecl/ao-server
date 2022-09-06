@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
+Object = "{33D38DA7-F4D2-4EDB-85C4-4DC9E7E096EB}#5.0#0"; "AOProgress.ocx"
 Begin VB.Form FrmStat 
    BackColor       =   &H00C0C0C0&
    BorderStyle     =   3  'Fixed Dialog
@@ -17,16 +17,38 @@ Begin VB.Form FrmStat
    ScaleWidth      =   375
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
-   Begin ComctlLib.ProgressBar ProgressBar1 
-      Height          =   255
-      Left            =   240
+   Begin AOProgress.uAOProgress ProgressBar1 
+      Height          =   375
+      Left            =   360
       TabIndex        =   1
       Top             =   600
-      Width           =   5175
-      _ExtentX        =   9128
-      _ExtentY        =   450
-      _Version        =   327682
-      Appearance      =   1
+      Width           =   5055
+      _ExtentX        =   8916
+      _ExtentY        =   661
+      Min             =   1
+      Value           =   1
+      ShadowTextColor =   255
+      BackgroundColor =   16777215
+      ForeColor       =   0
+      ShowText        =   0   'False
+      BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Arial"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
    End
    Begin VB.Label Titu 
       AutoSize        =   -1  'True

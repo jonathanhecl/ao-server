@@ -209,8 +209,8 @@ Private Function CreateAsm() As Boolean
         
         If isFirst Then
             hHeap = HeapCreate(HEAP_CREATE_ENABLE_EXECUTE Or HEAP_NO_SERIALIZE, 0, 0)
-            If hHeap = 0 Then Err.raise 7: Exit Function
-            If Not SaveCurHeap() Then HeapDestroy hHeap: hHeap = 0: Err.raise 7: Exit Function
+            If hHeap = 0 Then Err.Raise 7: Exit Function
+            If Not SaveCurHeap() Then HeapDestroy hHeap: hHeap = 0: Err.Raise 7: Exit Function
             AsmSize = AsmSize + &H4
         End If
         
@@ -219,7 +219,7 @@ Private Function CreateAsm() As Boolean
         If lpAsm = 0 Then
             If isFirst Then HeapDestroy hHeap
             hHeap = 0
-            Err.raise 7
+            Err.Raise 7
             Exit Function
         End If
         

@@ -271,63 +271,63 @@ Sub Main()
     frmCargando.Show
     
     ' Constants & vars
-    frmCargando.Label1(2).Caption = "Cargando constantes..."
+    frmCargando.cargar.CustomText = "Cargando constantes..."
     Call LoadConstants
     DoEvents
     
     ' Arrays
-    frmCargando.Label1(2).Caption = "Iniciando Arrays..."
+    frmCargando.cargar.CustomText = "Iniciando Arrays..."
     Call LoadArrays
 
     ' Server.ini & Apuestas.dat & Ciudades.dat
-    frmCargando.Label1(2).Caption = "Cargando Server.ini"
+    frmCargando.cargar.CustomText = "Cargando Server.ini"
     Call LoadSini
     Call CargarCiudades
     Call CargaApuestas
     
     ' Npcs.dat
-    frmCargando.Label1(2).Caption = "Cargando NPCs.Dat"
+    frmCargando.cargar.CustomText = "Cargando NPCs.Dat"
     Call CargaNpcsDat
 
     ' Obj.dat
-    frmCargando.Label1(2).Caption = "Cargando Obj.Dat"
+    frmCargando.cargar.CustomText = "Cargando Obj.Dat"
     Call LoadOBJData
     
     ' Hechizos.dat
-    frmCargando.Label1(2).Caption = "Cargando Hechizos.Dat"
+    frmCargando.cargar.CustomText = "Cargando Hechizos.Dat"
     Call CargarHechizos
         
     ' Objetos de Herreria
-    frmCargando.Label1(2).Caption = "Cargando Objetos de Herreria"
+    frmCargando.cargar.CustomText = "Cargando Objetos de Herreria"
     Call LoadArmasHerreria
     Call LoadArmadurasHerreria
     
     ' Objetos de Capinteria
-    frmCargando.Label1(2).Caption = "Cargando Objetos de Carpinteria"
+    frmCargando.cargar.CustomText = "Cargando Objetos de Carpinteria"
     Call LoadObjCarpintero
     
     ' Objetos del Artesano
-    frmCargando.Label1(2).Caption = "Cargando Objetos del Artesano"
+    frmCargando.cargar.CustomText = "Cargando Objetos del Artesano"
     Call LoadObjArtesano
     
     ' Balance.dat
-    frmCargando.Label1(2).Caption = "Cargando Balance.Dat"
+    frmCargando.cargar.CustomText = "Cargando Balance.Dat"
     Call LoadBalance
     
     ' Armaduras faccionarias
-    frmCargando.Label1(2).Caption = "Cargando ArmadurasFaccionarias.dat"
+    frmCargando.cargar.CustomText = "Cargando ArmadurasFaccionarias.dat"
     Call LoadArmadurasFaccion
     
     ' Pretorianos
-    frmCargando.Label1(2).Caption = "Cargando Pretorianos.dat"
+    frmCargando.cargar.CustomText = "Cargando Pretorianos.dat"
     Call LoadPretorianData
 
     ' Mapas
     If BootDelBackUp Then
-        frmCargando.Label1(2).Caption = "Cargando Backup"
+        frmCargando.cargar.CustomText = "Cargando Backup"
         Call CargarBackUp
     Else
-        frmCargando.Label1(2).Caption = "Cargando Mapas"
+        frmCargando.cargar.CustomText = "Cargando Mapas"
         Call LoadMapData
 
     End If

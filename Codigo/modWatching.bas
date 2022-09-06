@@ -29,7 +29,7 @@ Sub EndSpect(Userindex As Integer, targetIndex As Integer)
         
 End Sub
 
-Sub WatchingPlayer(Userindex As Integer, targetIndex As Integer)
+Sub StartWatching(Userindex As Integer, targetIndex As Integer)
 
     With UserList(Userindex)
     
@@ -49,9 +49,9 @@ Sub WatchingPlayer(Userindex As Integer, targetIndex As Integer)
         .flags.Watching = True
         
         If notifySpected Then
-            Call WriteModeWatching(targetIndex, 2)
+            Call WriteModeWatching(targetIndex, 2, 0)
         End If
-        Call WriteModeWatching(Userindex, 1)
+        Call WriteModeWatching(Userindex, 1, targetIndex)
         
         .PosAnt.Map = .Pos.Map
         .Pos.Map = 0
@@ -59,6 +59,8 @@ Sub WatchingPlayer(Userindex As Integer, targetIndex As Integer)
         .Char.FX = 21
         .Char.loops = INFINITE_LOOPS
         Call modSendData.SendToAreaByPos(.Pos.Map, .Pos.X, .Pos.Y, PrepareMessageCreateFX(.Char.CharIndex, .Char.FX, .Char.loops))
+        
+        Call WriteUserCharIndexInServer(Userindex, targetIndex)
         
         'Show the target stats
         Call CloneUserStats(Userindex, targetIndex)
@@ -74,6 +76,20 @@ Sub WatchingPlayer(Userindex As Integer, targetIndex As Integer)
         Call WriteConsoleMsg(Userindex, "Empiezas a espectar a " & UserList(.flags.TargetUser).Name & ".", FontTypeNames.FONTTYPE_INFO)
 
     End With
+
+End Sub
+
+Sub SendPosUpdateToWatchers(ByVal Userindex As Integer)
+
+    If Userindex > 0 Then
+        Dim LoopC As Integer
+        For LoopC = 1 To MAXSPECTING
+            If UserList(Userindex).flags.Specting(LoopC) <> 0 Then
+                Call WritePosUpdate(UserList(Userindex).flags.Specting(LoopC), Userindex)
+                Call WriteAreaChanged(UserList(Userindex).flags.Specting(LoopC), Userindex)
+            End If
+        Next
+    End If
 
 End Sub
 
@@ -107,7 +123,7 @@ Sub CloneUserStats(ByVal Userindex As Integer, Optional targetIndex As Integer)
     End If
 
 End Sub
-
+ 
 Sub CloneUserInvs(ByVal Userindex As Integer, ByVal Slot As Byte, Optional targetIndex As Integer)
 
     If targetIndex <= 0 Then
@@ -181,10 +197,12 @@ Sub StopWatching(Userindex As Integer)
         .Pos.Map = .PosAnt.Map
         .PosAnt.Map = 0
         
+        Call WriteUserCharIndexInServer(Userindex)
+        
         If Not IsSomeoneSpecting(.flags.TargetUser) Then
-           Call WriteModeWatching(.flags.TargetUser, 0)
+           Call WriteModeWatching(.flags.TargetUser, 0, 0)
         End If
-        Call WriteModeWatching(Userindex, 0)
+        Call WriteModeWatching(Userindex, 0, 0)
                     
         .flags.TargetUser = 0
         .flags.Watching = False

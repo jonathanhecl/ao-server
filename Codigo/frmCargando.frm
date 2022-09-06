@@ -1,11 +1,11 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
-Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.ocx"
+Object = "{48E59290-9880-11CF-9754-00AA00C00908}#1.0#0"; "MSINET.OCX"
+Object = "{33D38DA7-F4D2-4EDB-85C4-4DC9E7E096EB}#5.0#0"; "AOProgress.ocx"
 Begin VB.Form frmCargando 
    BackColor       =   &H00C0C0C0&
    BorderStyle     =   0  'None
    Caption         =   "Argentum"
-   ClientHeight    =   3180
+   ClientHeight    =   3480
    ClientLeft      =   1410
    ClientTop       =   3000
    ClientWidth     =   6585
@@ -13,23 +13,11 @@ Begin VB.Form frmCargando
    LinkTopic       =   "Form1"
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   267.49
+   ScaleHeight     =   292.725
    ScaleMode       =   0  'User
    ScaleWidth      =   439
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin ComctlLib.ProgressBar cargar 
-      Height          =   255
-      Left            =   120
-      TabIndex        =   2
-      Top             =   2880
-      Width           =   3855
-      _ExtentX        =   6800
-      _ExtentY        =   450
-      _Version        =   327682
-      Appearance      =   1
-      Min             =   1e-4
-   End
    Begin VB.PictureBox Picture1 
       BorderStyle     =   0  'None
       Height          =   2895
@@ -46,50 +34,41 @@ Begin VB.Form frmCargando
          _ExtentY        =   1005
          _Version        =   393216
       End
-      Begin VB.Label Label1 
-         Alignment       =   2  'Center
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "Cargando, por favor espere..."
-         BeginProperty Font 
-            Name            =   "MS Sans Serif"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Index           =   3
-         Left            =   2160
-         TabIndex        =   1
-         Top             =   2280
-         Width           =   2535
-      End
    End
-   Begin VB.Label Label1 
-      Alignment       =   1  'Right Justify
-      AutoSize        =   -1  'True
-      BackStyle       =   0  'Transparent
-      Caption         =   " aa"
-      BeginProperty Font 
-         Name            =   "Tahoma"
-         Size            =   8.25
+   Begin AOProgress.uAOProgress cargar 
+      Height          =   615
+      Left            =   0
+      TabIndex        =   1
+      Top             =   2880
+      Width           =   6615
+      _ExtentX        =   11668
+      _ExtentY        =   1085
+      Min             =   1
+      Value           =   1
+      Animate         =   0   'False
+      ShadowTextColor =   16744576
+      BackColor       =   16744576
+      BackAddColor    =   4934475
+      BackSubColor    =   8224125
+      CustomText      =   "Cargando"
+      BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Morpheus"
+         Size            =   15
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
-         Italic          =   0   'False
+         Italic          =   -1  'True
          Strikethrough   =   0   'False
       EndProperty
-      ForeColor       =   &H00000000&
-      Height          =   195
-      Index           =   2
-      Left            =   6000
-      TabIndex        =   3
-      Top             =   2880
-      Width           =   375
+      BeginProperty FONT {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Morpheus"
+         Size            =   15
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   -1  'True
+         Strikethrough   =   0   'False
+      EndProperty
    End
 End
 Attribute VB_Name = "frmCargando"
@@ -131,7 +110,7 @@ Private VersionNumberMaster As String
 Private VersionNumberLocal As String
 
 Private Sub Form_Load()
-    Label1(2).Caption = GetVersionOfTheServer()
+    cargar.CustomText = GetVersionOfTheServer()
     Picture1.Picture = LoadPicture(App.Path & "\logo.jpg")
     Me.VerifyIfUsingLastVersion
 End Sub

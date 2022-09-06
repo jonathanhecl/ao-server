@@ -1051,6 +1051,7 @@ Sub MoveUserChar(ByVal Userindex As Integer, ByVal nHeading As eHeading)
                     End With
                 
                     'Actualizamos las areas de ser necesario
+                    ' GS: FALTA AQUI
                     Call Areas.CheckUpdateNeededUser(CasperIndex, CasperHeading)
 
                 End If
@@ -1087,11 +1088,14 @@ Sub MoveUserChar(ByVal Userindex As Integer, ByVal nHeading As eHeading)
             End With
             
             'Actualizamos las areas de ser necesario
+            ' GS: FALTA AQUI
             Call Areas.CheckUpdateNeededUser(Userindex, nHeading)
         Else
             Call WritePosUpdate(Userindex)
 
         End If
+        
+        Call SendPosUpdateToWatchers(Userindex)
 
     Else
         Call WritePosUpdate(Userindex)
